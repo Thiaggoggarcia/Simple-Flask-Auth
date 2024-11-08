@@ -6,20 +6,28 @@ Este projeto foi desenvolvido com o objetivo de aprimorar meus conhecimentos em 
 
 Estas instruções fornecem uma orientação passo a passo para instalar e executar o projeto em sua máquina local, permitindo que você o utilize para desenvolvimento e testes.
 
-### Installing
+### Instalando o Projeto
 
 Para instalar o projeto, siga o passo a passo descrito abaixo.
 
-Faça a instalação do Python na sua máquina caso não tenha
-[Download Python](https://www.python.org/downloads/)
+Instale o Python em sua máquina, caso ainda não tenha [Download Python](https://www.python.org/downloads/ "Clique aqui para baixar o Python.")
 
-Opcional: Criação de um ambiente de programação
-O venv é integrado a partir do Python 3.3, então verifique se você tem o Python 3 instalado:
+**Opcional:** Crie um ambiente isolado para instalar os pacotes necessários para este projeto. Na raiz do projeto, execute o seguinte comando:
 
-    until finished
+    python -m venv .venv
 
-End with an example of getting some data out of the system or using it
-for a little demo
+Para ativar o ambiente virtual, use o seguinte comando:
+
+    .venv\Scripts\activate
+
+Instale as dependências necessárias usando o seguinte comando:
+    
+    pip install -r requirements.txt
+
+Para desativar o ambiente virtual, digite o seguinte comando:
+
+    deactivate
+    
 
 ## Running the tests
 
