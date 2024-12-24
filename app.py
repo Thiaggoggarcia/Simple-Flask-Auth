@@ -41,7 +41,7 @@ def logout():
     return jsonify({"Mensagem":"Logout Realizado com Sucesso!"})
       
 @app.route("/user", methods=['POST'])
-#@login_required # Caso habilitado será permitido apenas o cadastro por pessoas já autênticadas no sistema      
+@login_required # Caso habilitado será permitido apenas o cadastro por pessoas já autênticadas no sistema      
 def create_user():
     data = request.json
     username = data.get('username')
@@ -54,6 +54,37 @@ def create_user():
         return jsonify({"Mensagem":"Usuario Criado Com Sucesso!"})
     
     return jsonify({"Mensagem":"Erro ao Cadastrar Usuario!"}), 400 
+    
+@app.route("/view_user", methods=['GET'])
+def view_user():
+    data = request.json
+    username = data.get('username')
+    
+    if username:
+        user = User.query.filter_by(username=username).first()
+        if user:
+            return jsonify({
+                "username": user.username,
+                "password":user.password
+                })
+        return jsonify({"Mensagem": "Usuario nao encontrado!"}), 401
+    
+    return jsonify({"Mensagem": "Usuario nao encontrado!"}), 401
+    
+@app.route("/delete_user", methods=['DELETE'])
+@login_required
+def delete_user():
+    data = request.json
+    username = data.get('username')
+    
+    if username:
+        user = User.query.filter_by(username=username).first()
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({"Mensagem":"Usuario Deletado Com Sucesso!"})
+        
+        return jsonify({"Mensagem":"Usuario Nao Localizado!"}), 400 
     
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
