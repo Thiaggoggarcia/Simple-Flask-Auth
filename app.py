@@ -86,5 +86,22 @@ def delete_user():
         
         return jsonify({"Mensagem":"Usuario Nao Localizado!"}), 400 
     
+@app.route("/update_user", methods=['PUT'])
+@login_required
+def update():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    
+    if username and password:
+        user = User.query.filter_by(username=username).first()
+        if user:
+            user.username = username
+            user.password = password
+            db.session.commit()
+            return jsonify({"Mensagem":"Usuario Atualizado com Sucesso!"})
+        
+        return jsonify({"Mensagem":"Usuario nao localizado"}), 401
+    
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
