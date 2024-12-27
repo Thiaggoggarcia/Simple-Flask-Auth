@@ -54,22 +54,34 @@ def create_user():
         return jsonify({"Mensagem":"Usuario Criado Com Sucesso!"})
     
     return jsonify({"Mensagem":"Erro ao Cadastrar Usuario!"}), 400 
-    
+
+#Filtrando pelo Nome  
 @app.route("/view_user", methods=['GET'])
 def view_user():
-    data = request.json
-    username = data.get('username')
+        #user = User.query.filter_by(username=username).first()
+    users = User.query.all()
+    dic = []
+    for user in users:
+        dic.append({
+            "Id": user.id,
+            "Username": user.username,
+            #"Password":user.password
+            })
     
-    if username:
-        user = User.query.filter_by(username=username).first()
-        if user:
-            return jsonify({
-                "username": user.username,
-                "password":user.password
-                })
-        return jsonify({"Mensagem": "Usuario nao encontrado!"}), 401
+    return dic
+#Usando o ID          
+"""@app.route("/user/<int:id_user>", methods=['GET'])
+@login_required
+def view_user(id_user):
+    user = User.query.get(id_user)
     
-    return jsonify({"Mensagem": "Usuario nao encontrado!"}), 401
+    if user:
+        return {
+            "username": user.username,
+            "password":user.password
+            }
+    
+    return jsonify({"Mensagem": "Usuario nao encontrado!"}), 404"""
     
 @app.route("/delete_user", methods=['DELETE'])
 @login_required
@@ -79,11 +91,14 @@ def delete_user():
     
     if username:
         user = User.query.filter_by(username=username).first()
-        if user:
-            db.session.delete(user)
-            db.session.commit()
-            return jsonify({"Mensagem":"Usuario Deletado Com Sucesso!"})
-        
+        if user.id != current_user.id:
+            if user:
+                db.session.delete(user)
+                db.session.commit()
+                return jsonify({"Mensagem":"Usuario Deletado Com Sucesso!"})
+        else:
+            return jsonify({"Mensagem":"Operacao Nao Permitida, Usuario Deletado Com Sucesso!"})
+            
         return jsonify({"Mensagem":"Usuario Nao Localizado!"}), 400 
     
 @app.route("/update_user", methods=['PUT'])
@@ -96,12 +111,11 @@ def update():
     if username and password:
         user = User.query.filter_by(username=username).first()
         if user:
-            user.username = username
             user.password = password
             db.session.commit()
-            return jsonify({"Mensagem":"Usuario Atualizado com Sucesso!"})
+            return jsonify({"Mensagem":"Senha Atualizada com Sucesso!"})
         
-        return jsonify({"Mensagem":"Usuario nao localizado"}), 401
+        return jsonify({"Mensagem":"Usuario nao localizado"}), 404
     
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
