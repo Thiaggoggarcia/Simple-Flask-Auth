@@ -55,61 +55,55 @@ def create_user():
     
     return jsonify({"Mensagem":"Erro ao Cadastrar Usuario!"}), 400 
 
-#Filtrando pelo Nome  
+#Filtrando todos os usuarios do banco 
 @app.route("/view_user", methods=['GET'])
 def view_user():
-        #user = User.query.filter_by(username=username).first()
-    users = User.query.all()
-    dic = []
+    users = User.query.limit(20).all()
+    list_users = []
     for user in users:
-        dic.append({
+        list_users.append({
             "Id": user.id,
             "Username": user.username,
-            #"Password":user.password
             })
     
-    return dic
+    return list_users
+
 #Usando o ID          
-"""@app.route("/user/<int:id_user>", methods=['GET'])
+@app.route("/user/<int:id_user>", methods=['GET'])
 @login_required
-def view_user(id_user):
+def get_user(id_user):
     user = User.query.get(id_user)
     
     if user:
         return {
             "username": user.username,
-            "password":user.password
             }
     
-    return jsonify({"Mensagem": "Usuario nao encontrado!"}), 404"""
+    return jsonify({"Mensagem": "Usuario nao encontrado!"}), 404
     
-@app.route("/delete_user", methods=['DELETE'])
+@app.route("/user/<int:id_user>", methods=['DELETE'])
 @login_required
-def delete_user():
-    data = request.json
-    username = data.get('username')
+def delete(id_user):
     
-    if username:
-        user = User.query.filter_by(username=username).first()
+    user = User.query.get(id_user)
+    if user:
         if user.id != current_user.id:
-            if user:
-                db.session.delete(user)
-                db.session.commit()
-                return jsonify({"Mensagem":"Usuario Deletado Com Sucesso!"})
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({"Mensagem":f"Usuario {user.username} Deletado Com Sucesso!"})
         else:
-            return jsonify({"Mensagem":"Operacao Nao Permitida, Usuario Deletado Com Sucesso!"})
+            return jsonify({"Mensagem":"Operacao Nao Permitida!"}), 404
             
-        return jsonify({"Mensagem":"Usuario Nao Localizado!"}), 400 
+    return jsonify({"Mensagem":"Usuario Nao Localizado!"}), 404 
     
-@app.route("/update_user", methods=['PUT'])
+@app.route("/user/<int:id_user>", methods=['PUT'])
 @login_required
-def update():
+def update(id_user):
     data = request.json
-    username = data.get('username')
     password = data.get('password')
     
-    if username and password:
-        user = User.query.filter_by(username=username).first()
+    if password:
+        user = User.query.get(id_user)
         if user:
             user.password = password
             db.session.commit()
