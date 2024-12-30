@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask,render_template, request, jsonify
 from models.user import User
 from database import db
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
@@ -17,9 +17,13 @@ login_menager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(user_id)
 
+@app.route("/")
+def index():
+    return render_template('login.html')
+
 @app.route("/login", methods=['POST'])
 def login():
-    data = request.json
+    data = request.form
     username = data.get('username')
     password = data.get('password')
     
@@ -28,11 +32,11 @@ def login():
         if user and user.password == password:
             login_user(user)
             print(current_user.is_authenticated)
-            return jsonify({"Mensagem": "Autenticacao Realizada com Sucesso!"})
+            return jsonify({"Mensagem": f"Usuário {username} Entrou no Sistema!"})
         else:
-            return jsonify({"Mensagem":"Usuario ou Senha incorreto!"}), 400
+            return jsonify({"Mensagem":"Usuario ou Senha incorreto!"}), 404
     else:
-        return jsonify({"Mensagem": "Credencial Invalida"}), 400
+        return jsonify({"Mensagem": "Credencial Invalida"}), 404
     
 @app.route('/logout', methods=['GET'])
 @login_required
