@@ -1,4 +1,4 @@
-from flask import Flask,render_template, request, jsonify
+from flask import Flask,render_template, request, jsonify, redirect,url_for
 from models.user import User
 from database import db
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
@@ -18,8 +18,12 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 @app.route("/")
-def index():
+def login_html():
     return render_template('login.html')
+
+@app.route("/cadastro.html")
+def cadastro_html():
+    return render_template('cadastro.html')
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -32,11 +36,11 @@ def login():
         if user and user.password == password:
             login_user(user)
             print(current_user.is_authenticated)
-            return jsonify({"Mensagem": f"Usuário {username} Entrou no Sistema!"})
+            return jsonify({"Mensagem": f"Usuario {username} Entrou no Sistema!"})
         else:
-            return jsonify({"Mensagem":"Usuario ou Senha incorreto!"}), 404
+            return jsonify({"Mensagem":"Usuario ou Senha incorreto!"}), 403
     else:
-        return jsonify({"Mensagem": "Credencial Invalida"}), 404
+        return jsonify({"Mensagem": "Credencial Invalida"}), 400
     
 @app.route('/logout', methods=['GET'])
 @login_required
@@ -47,7 +51,7 @@ def logout():
 @app.route("/user", methods=['POST'])
 @login_required # Caso habilitado será permitido apenas o cadastro por pessoas já autênticadas no sistema      
 def create_user():
-    data = request.json
+    data = request.form
     username = data.get('username')
     password = data.get('password')
     
@@ -55,9 +59,9 @@ def create_user():
         user = User(username=username, password=password)
         db.session.add(user)
         db.session.commit()
-        return jsonify({"Mensagem":"Usuario Criado Com Sucesso!"})
+        return redirect(url_for('login_html')) #jsonify({"Mensagem":"Usuario Criado Com Sucesso!"}),
     
-    return jsonify({"Mensagem":"Erro ao Cadastrar Usuario!"}), 400 
+    return jsonify({"Mensagem":"Erro ao Cadastrar Usuario!"}), 401 
 
 #Filtrando todos os usuarios do banco 
 @app.route("/view_user", methods=['GET'])

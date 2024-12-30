@@ -60,3 +60,13 @@ button {
 button:hover {
     background-color: #434444;
 }
+
+a {
+    display: block;
+    margin-top: 12px;
+    text-decoration: none;
+    color: #000;
+}
+a:hover {
+    color: #5c6666;
+}
