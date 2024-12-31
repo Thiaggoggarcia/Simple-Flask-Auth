@@ -29,11 +29,31 @@ Para desativar o ambiente virtual, digite o seguinte comando:
     deactivate
     
 
-## Running the tests
+## Banco de Dados
 
-Explain how to run the automated tests for this system
+No início do projeto, utilizei o SQLAlchemy como banco de dados para realizar os testes iniciais da aplicação. Após o desenvolvimento, migrei para o banco de dados MySQL, visando aumentar a robustez do sistema e, ao mesmo tempo, aprimorar meus conhecimentos nessa tecnologia.
 
-### Sample Tests
+Abaixo, apresento o passo a passo para a instalação e configuração de ambos os bancos de dados.
+
+### Instalando e Configurando o MySQL
+
+Para instalar o banco de dados, optei por utilizar um container em Docker, facilitando a instalação e garantindo compatibilidade com qualquer sistema operacional.
+
+### Passo a passo
+
+1. **Instale o Docker Desktop**  
+   Baixe e instale o Docker Desktop em sua máquina. O instalador pode ser encontrado no [site oficial do Docker](https://www.docker.com/get-started/).
+
+2. **Crie o arquivo `docker-compose.yaml`**  
+   Na raiz do projeto, crie um arquivo chamado `docker-compose.yaml`. Esse arquivo conterá toda a configuração necessária para o container.
+
+3. **Suba o container**  
+   Na raiz do projeto, execute o seguinte comando no terminal para iniciar o container:
+  
+        docker-compose up
+   
+
+Se precisar de ajuda para estruturar o conteúdo do arquivo `docker-compose.yaml` ou adicionar mais detalhes, é só pedir!
 
 Explain what these tests test and why
 

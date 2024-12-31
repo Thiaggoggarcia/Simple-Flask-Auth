@@ -38,9 +38,9 @@ def login():
             print(current_user.is_authenticated)
             return jsonify({"Mensagem": f"Usuario {username} Entrou no Sistema!"})
         else:
-            return jsonify({"Mensagem":"Usuario ou Senha incorreto!"}), 403
+            return jsonify({"Mensagem":"Usuario ou Senha incorreto!"}), 401
     else:
-        return jsonify({"Mensagem": "Credencial Invalida"}), 400
+        return jsonify({"Mensagem": "Credencial Invalida"}), 404
     
 @app.route('/logout', methods=['GET'])
 @login_required
@@ -59,7 +59,7 @@ def create_user():
         user = User(username=username, password=password)
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('login_html')) #jsonify({"Mensagem":"Usuario Criado Com Sucesso!"}),
+        return redirect(url_for('login_html')),201 #jsonify({"Mensagem":"Usuario Criado Com Sucesso!"}),
     
     return jsonify({"Mensagem":"Erro ao Cadastrar Usuario!"}), 401 
 
@@ -100,7 +100,7 @@ def delete(id_user):
             db.session.commit()
             return jsonify({"Mensagem":f"Usuario {user.username} Deletado Com Sucesso!"})
         else:
-            return jsonify({"Mensagem":"Operacao Nao Permitida!"}), 404
+            return jsonify({"Mensagem":"Operacao Nao Permitida!"}), 401
             
     return jsonify({"Mensagem":"Usuario Nao Localizado!"}), 404 
     
