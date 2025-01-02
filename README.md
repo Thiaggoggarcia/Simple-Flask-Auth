@@ -44,10 +44,41 @@ Para instalar o banco de dados, optei por utilizar um container em Docker, facil
 1. **Instale o Docker Desktop**  
    Baixe e instale o Docker Desktop em sua máquina. O instalador pode ser encontrado no [site oficial do Docker](https://www.docker.com/get-started/).
 
-2. **Crie o arquivo `docker-compose.yaml`**  
-   Na raiz do projeto, crie um arquivo chamado `docker-compose.yaml`. Esse arquivo conterá toda a configuração necessária para o container.
+2. **Configure o arquivo `docker-compose.yaml`**  
+   Este arquivo contém todas as configurações do container MySQL. Abaixo, segue a estrutura com as descrições de cada parâmetro.
+     ~~~
+      services:
+        db:
+          image: mysql:latest
+          restart: always
+          environment:
+            MYSQL_USER: "admin"
+            MYSQL_PASSWORD: "admin123"
+            MYSQL_DATABASE: "flash-crud"
+            MYSQL_ROOT_PASSWORD: "admin123"
+          ports:
+            - "3306:3306"
+          expose:
+            - "3306"
+          volumes:
+            - "/Mysql-docker:/var/lib/mysql"
+     ~~~
 
-3. **Suba o container**  
+* **services:** Define a seção onde você descreve os serviços da sua aplicação.
+* **db:** Nomeia o serviço como "db", que representará o seu banco de dados MySQL.
+* **image:** ***mysql:latest:*** Indica que o serviço usará a imagem oficial mais recente do MySQL disponível no Docker Hub.
+* **restart:** ***always:*** Garante que o container do banco de dados será reiniciado automaticamente caso ele pare por algum motivo (por exemplo, uma reinicialização do sistema).
+* **environment:** Define as variáveis de ambiente que serão passadas para o container do MySQL durante a inicialização.
+* **MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE, MYSQL_ROOT_PASSWORD:** Configuram o usuário padrão, senha, banco de dados padrão e senha root do MySQL, respectivamente.
+* **ports:** Mapeia as portas.
+* ***"3306:3306":*** Mapeia a porta 3306 do container (onde o MySQL escuta por padrão) para a porta 3306 da sua máquina host. Isso permite que você se conecte ao banco de dados a partir da sua máquina local.
+* **expose:** Expõe a porta 3306 dentro da rede Docker. Isso significa que outros containers dentro da mesma rede Docker podem se conectar ao banco de dados.
+* **volumes:** Define volumes.
+* ***"/Mysql-docker:/var/lib/mysql":*** Cria um volume nomeado "Mysql-docker" na sua máquina host e o monta no diretório /var/lib/mysql dentro do container. Isso garante que os dados do banco de dados sejam persistidos mesmo se o container for removido ou reiniciado.
+
+**Observação: Os campos ***environments:*** e ***volumes:*** podem ser alterados conforme o ambiente de desenvolvimento **
+
+3. **Suba o container**   
    Na raiz do projeto, execute o seguinte comando no terminal para iniciar o container:
   
         docker-compose up
