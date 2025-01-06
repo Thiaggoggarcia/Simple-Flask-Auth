@@ -49,6 +49,7 @@ Para instalar o banco de dados, optei por utilizar um container em Docker, facil
      ~~~
       services:
         db:
+          container_name: mysql-container
           image: mysql:latest
           restart: always
           environment:
@@ -58,14 +59,13 @@ Para instalar o banco de dados, optei por utilizar um container em Docker, facil
             MYSQL_ROOT_PASSWORD: "admin123"
           ports:
             - "3306:3306"
-          expose:
-            - "3306"
           volumes:
-            - "/Mysql-docker:/var/lib/mysql"
+            - "C:/Mysql-docker:/var/lib/mysql"
      ~~~
 
 * **services:** Define a seção onde você descreve os serviços da sua aplicação.
 * **db:** Nomeia o serviço como "db", que representará o seu banco de dados MySQL.
+* **container_name:** ***mysql-container*** Define o nome do container
 * **image:** ***mysql:latest:*** Indica que o serviço usará a imagem oficial mais recente do MySQL disponível no Docker Hub.
 * **restart:** ***always:*** Garante que o container do banco de dados será reiniciado automaticamente caso ele pare por algum motivo (por exemplo, uma reinicialização do sistema).
 * **environment:** Define as variáveis de ambiente que serão passadas para o container do MySQL durante a inicialização.
@@ -74,9 +74,9 @@ Para instalar o banco de dados, optei por utilizar um container em Docker, facil
 * ***"3306:3306":*** Mapeia a porta 3306 do container (onde o MySQL escuta por padrão) para a porta 3306 da sua máquina host. Isso permite que você se conecte ao banco de dados a partir da sua máquina local.
 * **expose:** Expõe a porta 3306 dentro da rede Docker. Isso significa que outros containers dentro da mesma rede Docker podem se conectar ao banco de dados.
 * **volumes:** Define volumes.
-* ***"/Mysql-docker:/var/lib/mysql":*** Cria um volume nomeado "Mysql-docker" na sua máquina host e o monta no diretório /var/lib/mysql dentro do container. Isso garante que os dados do banco de dados sejam persistidos mesmo se o container for removido ou reiniciado.
+* ***"/Mysql-docker:/var/lib/mysql":*** Cria um vínculo entre o host e o contêiner: Essa linha estabelece uma conexão entre um diretório no seu sistema host (C:/Mysql-docker) e um diretório dentro do contêiner Docker (/var/lib/mysql).
 
-**Observação: Os campos ***environments:*** e ***volumes:*** podem ser alterados conforme o ambiente de desenvolvimento **
+**Observação: Os campos ***environments:*** e ***volumes:*** podem ser alterados conforme o ambiente de desenvolvimento**
 
 3. **Suba o container**   
    Na raiz do projeto, execute o seguinte comando no terminal para iniciar o container:
